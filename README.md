@@ -50,15 +50,17 @@ have them already.
 
 ### Creating a CMS Plugin
 
-You need to create a CMS plugin wrap a generic view. For example, consider this view:
+You need to create a CMS plugin to wrap your generic view. For example,
+consider this view, and imagine that you want to insert it into a placeholder
+on a Django-CMS Page:
 
     class ExampleListView(ListView):
         model = Wossname
         template_name = "test_app/example_list_view.html"
 
-You'll need to create a model to store the configuration for each instance
-of your plugin that the user adds in the CMS. For example, you could add this
-to `models.py` in one of your apps:
+You'll need to create a model to store the configuration for each instance of
+your plugin that the user adds in the CMS. For example, you could add this to
+`models.py` in one of your apps:
 
     from django.db import models
     from cms.models.pluginmodel import CMSPlugin
@@ -91,9 +93,9 @@ the same app:
 Whenever the plugin is included in a page, it will render the template
 specified by its `render_template` attribute. The example above uses the
 same template as the generic View, but since that template probably
-includes HTML <head> and <body> tags, etc, you probably want to use a
-different template including just the HTML that you want to place into
-the CMS page in the placeholder slot.
+includes HTML `<head>` and `<body>` tags, etc, you probably want to use a
+different template. You might want to include only the HTML snippet that you
+want to place into the CMS page in the placeholder slot.
 
 ### Passing parameters to the view
 
