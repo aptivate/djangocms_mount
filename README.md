@@ -77,6 +77,11 @@ your plugin that the user adds in the CMS. For example, you could add this to
                 'limit': self.limit,
             }
 
+The `__unicode__` method determines what you see in the Django-CMS backend
+when you are looking at a page's placeholders and deciding which one to edit,
+so it's useful to return a string that identifies this particular plugin
+as much as possible.
+
 Then you can wrap the View in a CMS plugin, for example in `cms_plugins.py` in
 the same app:
 
@@ -108,11 +113,48 @@ The `limit` value is accessible through the plugin model instance passed to
 constructed view. In our case passing `paginate_by` will set the page size for
 the `ListView`.
 
-
     class ExampleListPlugin(ViewMountPluginBase):
-
+        ...
         def get_view_kwargs(self, request, context, instance, placeholder):
             return {'paginate_by': instance.limit}
+
+If you want to introduce new parameters, for example to filter the queryset
+used by the view, you need to add them as properties of your View class:
+
+    class ExampleListView(ListView):
+        ...
+        filter_by_name = None
+        ...
+        def get_queryset(self):
+            return super(ExampleListView, self).get_queryset().filter(
+                name=self.filter_by_name)
+
+And now that they exist on the View, they'll be automatically assigned to
+a newly created instance by `View.__init__`, if you pass them as keyword
+arguments. So let's do that:
+
+    class ExampleListPlugin(ViewMountPluginBase):
+        ...
+        def get_view_kwargs(self, request, context, instance, placeholder):
+            return {
+                'paginate_by': instance.limit,
+                'filter_by_name': 'hello',
+            }
+
+You can also add them to the PluginModel, which allows users to configure
+them differently on each instance of your plugin:
+
+    class ExampleListPluginModel(CMSPlugin):
+        ...
+        filter_by_name = models.CharField(max_length=255)
+
+    class ExampleListPlugin(ViewMountPluginBase):
+        ...
+        def get_view_kwargs(self, request, context, instance, placeholder):
+            return {
+                ...
+                'filter_by_name': instance.filter_by_name,
+            }
 
 ### Running the tests
 
