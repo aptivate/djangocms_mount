@@ -90,6 +90,7 @@ the same app:
         model = ExampleListPluginModel
         view_class = ExampleListView
         render_template = ExampleListView.template_name
+        cache = False  # Only enable caching when it makes sense for the plugin 
 
     plugin_pool.register_plugin(ExampleListPlugin)
 
@@ -99,6 +100,12 @@ same template as the generic View, but since that template probably
 includes HTML <head> and <body> tags, etc, you probably want to use a
 different template including just the HTML that you want to place into
 the CMS page in the placeholder slot.
+
+DjangoCMS caches plugin output by default, in version 3.0 you can disable this
+with the `cache` attribute on the plugin class. You might want to do this if
+your plugin returns dynamic content. Note that when `DEBUG=True` the plugin
+cache is disabled so you might not see any problems until you try it in
+production.
 
 ### Passing parameters to the view
 
