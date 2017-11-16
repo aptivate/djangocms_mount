@@ -20,7 +20,6 @@ setup(
     install_requires=[
         "Django", # 1.5 or 1.6
         "django-cms", # 2.4 or 3.0
-        "south >= 0.8.4",
         "mock >= 1.0.1",
     ],
     tests_require=[
